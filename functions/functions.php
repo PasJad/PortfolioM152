@@ -1,14 +1,17 @@
 <?php
 
 function connexionDatabase(){
+
+    static $monpdo = null;
+
     $host = "localhost";
     $dbname = "Portfolio";
-    $dbusername = "root";
-    $password = "Super";
+    $dbusername = "MediaUser";
+    $password = "SuperMedia";
     
     try {
         //code...
-        $monpdo = new PDO("mysql:host=$host;dbname:$dbname;$dbusername;$password");
+        $monpdo = new PDO("mysql:host=$host;dbname=$dbname",$dbusername,$password);
         $monpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
     } catch (PDOException $e) {
         echo $e;
@@ -17,13 +20,15 @@ function connexionDatabase(){
 }
 
 function addMedia($name, $typeMedia){
+
+
     $host = "localhost";
     $dbname = "Portfolio";
-    $dbusername = "root";
-    $password = "Super";
+    $dbusername = "MediaUser";
+    $password = "SuperMedia";
 
     try {
-        $monpdo = new PDO("mysql:host=$host;dbname:$dbname;$dbusername;$password");
+        $monpdo = new PDO("mysql:host=$host;dbname=$dbname",$dbusername,$password);
 
         $monpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 
@@ -32,6 +37,7 @@ function addMedia($name, $typeMedia){
         $monpdo->exec($sql);
     }catch (PDOException $e){
         $e->getMessage();
+        echo $e;
     }
 
 
@@ -40,11 +46,11 @@ function addMedia($name, $typeMedia){
 function addPost($comment){
     $host = "localhost";
     $dbname = "Portfolio";
-    $dbusername = "root";
-    $password = "Super";
+    $dbusername = "MediaUser";
+    $password = "SuperMedia";
 
     try {
-        $monpdo = new PDO("mysql:host=$host;dbname:$dbname;$dbusername;$password");
+        $monpdo = new PDO("mysql:host=$host;dbname=$dbname",$dbusername,$password);
 
         $monpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
 

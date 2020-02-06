@@ -2,7 +2,7 @@
 require_once("functions.php");
 $commentaire = filter_input(INPUT_POST,'comment',FILTER_SANITIZE_STRING);
 
-$target_dir = "./media/";
+$target_dir = "../media/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -17,11 +17,7 @@ if(isset($_POST["submit"])) {
         $uploadOk = 0;
     }
 }
-// Check if file already exists
-if (file_exists($target_file)) {
-    echo "Sorry, file already exists.";
-    $uploadOk = 0;
-}
+
 // Check file size
 if ($_FILES["fileToUpload"]["size"] > 3000000) {
     echo "Sorry, your file is too large.";
@@ -40,8 +36,8 @@ if ($uploadOk == 0) {
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
         echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
-        addMedia($_FILES["fileToUpload"]["name"],$imageFileType);
         addPost($commentaire);
+        addMedia($_FILES["fileToUpload"]["name"],$imageFileType);
     } else {
         echo "Sorry, there was an error uploading your file.";
     }

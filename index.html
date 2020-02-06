@@ -184,7 +184,7 @@
             </button>
             Update Status
           </div>
-          <form class="form center-block" action="./functions/upload.php" method="post" enctype="multipart/form-data" id="form1">
+          <form class="form center-block" action="functions/upload.php" method="post" enctype="multipart/form-data">
           <div class="modal-body">
               <div class="form-group">
                 <textarea
@@ -197,16 +197,13 @@
           </div>
           <div class="modal-footer">
             <div>
-              <button
+              <input
                 class="btn btn-primary btn-sm"
                 aria-hidden="true"
                 type="submit"
                 value="submit"
-                form="form1"
-                data-dismiss="modal"
               >
                 Post
-              </button>
               <ul class="pull-left list-inline">
                 <li>
                   <input type="file" name="fileToUpload" id="fileToUpload">
