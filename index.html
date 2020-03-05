@@ -128,6 +128,7 @@
 						<div class="well">
 							<h3>Welcome</h3>
 						  </div>
+
 	  
                     </div>
                   </div>
@@ -190,7 +191,7 @@
                 <textarea
                   class="form-control input-lg"
                   autofocus=""
-                  placeholder="What do you want to share?"
+                  placeholder="What do you want to share2?"
                   name="comment"
                 ></textarea>
               </div>
@@ -202,11 +203,12 @@
                 aria-hidden="true"
                 type="submit"
                 value="submit"
+                name="submit"
               >
                 Post
               <ul class="pull-left list-inline">
                 <li>
-                  <input type="file" name="fileToUpload" id="fileToUpload">
+                  <input type="file" name="fileToUpload[]" id="fileToUpload" multiple accept="image/*,video/*">
                 </li>
               </ul>
             </div>

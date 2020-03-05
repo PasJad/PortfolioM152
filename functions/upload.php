@@ -1,45 +1,64 @@
 <?php
-require_once("functions.php");
-$commentaire = filter_input(INPUT_POST,'comment',FILTER_SANITIZE_STRING);
-
+session_start();
+require('functions.php');
+$commentaire = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_STRING);
+$submitted = filter_input(INPUT_POST, 'submit', FILTER_SANITIZE_STRING);
 $target_dir = "../media/";
-$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+$willUploadFile = false;
+
 $uploadOk = 1;
-$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-// Check if image file is a actual image or fake image
-if(isset($_POST["submit"])) {
-    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-    if($check !== false) {
-        echo "File is an image - " . $check["mime"] . ".";
-        $uploadOk = 1;
-    } else {
-        echo "File is not an image.";
-        $uploadOk = 0;
+
+if ($submitted) {
+    if (connexionDatabase()) {
+        connexionDatabase()->BeginTransaction();
+        if ($_FILES["fileToUpload"]['name'][0] != "") {
+            $willUploadFile = true;
+        }
+
+
+        if ($willUploadFile == true){
+            // Allow certain file formats
+            for ($i = 0; $i < count($_FILES["fileToUpload"]["name"]); $i++) {
+                $myFileType = mime_content_type($_FILES["fileToUpload"]["tmp_name"][$i]);
+                echo $myFileType;
+                echo strpos($myFileType, "image/");
+                if (strpos($myFileType, "image/") === 0 or strpos($myFileType, "video/") === 0 or strpos($myFileType, "audio/") === 0) {
+                    $uploadOk = 1;
+                } else {
+                    echo "File is not an image.";
+                    $uploadOk = 0;
+                }
+            }
+        }
+// Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 1) {
+            $post = addPost($commentaire);
+            echo "<br>" . $post . "<br>";
+            if ($post != null) {
+                if ($willUploadFile == true){
+                    for ($i = 0; $i < count($_FILES["fileToUpload"]["name"]); $i++) {
+                        echo $_FILES['fileToUpload']["name"][$i];
+                        $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"][$i]);
+                        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $target_file)) {
+                            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+                            addMedia($_FILES["fileToUpload"]["name"][$i], $imageFileType, $post);
+                            echo 'Your files has been uploaded';
+
+                        } else {
+                            echo "Une image n'as pas pu être ajouter";
+                            connexionDatabase()->rollBack();
+                        }
+                    }
+                }
+                connexionDatabase()->commit();
+            }
+
+        } else {
+            echo "Votre Upload n'as pas pu être effectué";
+            connexionDatabase()->rollBack();
+        }
     }
+
 }
 
-// Check file size
-if ($_FILES["fileToUpload"]["size"] > 3000000) {
-    echo "Sorry, your file is too large.";
-    $uploadOk = 0;
-}
-// Allow certain file formats
-if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-&& $imageFileType != "gif" && $imageFileType != "mp4" && $imageFileType != "webm") {
-    echo "Sorry, only JPG, JPEG, MP4, WEBM,PNG & GIF files are allowed.";
-    $uploadOk = 0;
-}
-// Check if $uploadOk is set to 0 by an error
-if ($uploadOk == 0) {
-    echo "Sorry, your file was not uploaded.";
-// if everything is ok, try to upload file
-} else {
-    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
-        addPost($commentaire);
-        addMedia($_FILES["fileToUpload"]["name"],$imageFileType);
-    } else {
-        echo "Sorry, there was an error uploading your file.";
-    }
-}
- ?>
+?>

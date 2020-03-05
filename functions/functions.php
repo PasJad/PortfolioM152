@@ -1,5 +1,6 @@
 <?php
 
+
 function connexionDatabase(){
 
     static $monpdo = null;
@@ -8,31 +9,26 @@ function connexionDatabase(){
     $dbname = "Portfolio";
     $dbusername = "MediaUser";
     $password = "SuperMedia";
-    
-    try {
-        //code...
-        $monpdo = new PDO("mysql:host=$host;dbname=$dbname",$dbusername,$password);
-        $monpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        echo $e;
+
+    if ($monpdo === null){
+        try {
+            //code...
+            $monpdo = new PDO("mysql:host=$host;dbname=$dbname",$dbusername,$password);
+            $monpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION, PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo $e;
+            echo "Impossible de se connecter à la base de données";
+        }
     }
-    
+    return $monpdo;
 }
 
-function addMedia($name, $typeMedia){
-
-
-    $host = "localhost";
-    $dbname = "Portfolio";
-    $dbusername = "MediaUser";
-    $password = "SuperMedia";
+function addMedia($name, $typeMedia,$idPost){
 
     try {
-        $monpdo = new PDO("mysql:host=$host;dbname=$dbname",$dbusername,$password);
+        $monpdo = connexionDatabase();
 
-        $monpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
-
-        $sql = "INSERT INTO media (typeMedia,nomMedia) VALUES ('$typeMedia','$name')";
+        $sql = "INSERT INTO media (typeMedia,nomMedia,idPost) VALUES ('$typeMedia','$name','$idPost')";
 
         $monpdo->exec($sql);
     }catch (PDOException $e){
@@ -44,22 +40,61 @@ function addMedia($name, $typeMedia){
 }
 
 function addPost($comment){
-    $host = "localhost";
-    $dbname = "Portfolio";
-    $dbusername = "MediaUser";
-    $password = "SuperMedia";
+
 
     try {
-        $monpdo = new PDO("mysql:host=$host;dbname=$dbname",$dbusername,$password);
-
-        $monpdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
+        $monpdo = connexionDatabase();
 
         $sql = "INSERT INTO post (commentaire) VALUES ('$comment')";
 
         $monpdo->exec($sql);
+
+        $postId = $monpdo->lastInsertId();
+
+        return $monpdo->lastInsertId();
     }catch (PDOException $e){
         $e->getMessage();
     }
+
+
+}
+
+function getPost(){
+
+    try {
+        $monpdo = connexionDatabase();
+
+        $sql = "select commentaire from post";
+
+        $monpdo->exec($sql);
+    }
+    catch (PDOException $e){
+        $e->getMessage();
+    }
+
+}
+
+function getImages(){
+
+    try {
+        $myMedia = null;
+        $monpdo = connexionDatabase();
+
+        $sql = "select idMedia,idPost from media";
+
+        $myMedia = $monpdo->exec($sql);
+        return $myMedia;
+    }
+    catch (PDOException $e){
+        $e->getMessage();
+    }
+}
+
+function DrawMessage(){
+    $myPosts = getPost();
+
+
+
 
 
 }
