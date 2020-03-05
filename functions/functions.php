@@ -31,6 +31,7 @@ function addMedia($name, $typeMedia,$idPost){
         $sql = "INSERT INTO media (typeMedia,nomMedia,idPost) VALUES ('$typeMedia','$name','$idPost')";
 
         $monpdo->exec($sql);
+        return $monpdo->lastInsertId();
     }catch (PDOException $e){
         $e->getMessage();
         echo $e;
@@ -64,9 +65,10 @@ function getPost(){
     try {
         $monpdo = connexionDatabase();
 
-        $sql = "select commentaire from post";
+        $sql = "select idPost,commentaire from post";
 
-        $monpdo->exec($sql);
+        $mesPosts = $monpdo->query($sql)->fetchAll();
+        return $mesPosts;
     }
     catch (PDOException $e){
         $e->getMessage();
@@ -74,15 +76,16 @@ function getPost(){
 
 }
 
-function getImages(){
+function getMedia(){
 
     try {
         $myMedia = null;
         $monpdo = connexionDatabase();
 
-        $sql = "select idMedia,idPost from media";
+        $sql = "select idMedia,idPost,nomMedia from media";
 
-        $myMedia = $monpdo->exec($sql);
+
+        $myMedia = $monpdo->query($sql)->fetchAll();
         return $myMedia;
     }
     catch (PDOException $e){
@@ -92,6 +95,25 @@ function getImages(){
 
 function DrawMessage(){
     $myPosts = getPost();
+    $myMedias = getMedia();
+
+    for ($i = 0;$i < count($myPosts);$i++) {
+        echo "<div class='well'>";
+        echo "<div class=\"text-center\" style='font-size: 3vh'>" . $myPosts[$i]['commentaire'];
+        foreach ($myMedias as $media) {
+            if ($media['idPost'] == $myPosts[$i]['idPost']){
+                if ($media['TypeMedia']){
+
+                }
+                echo "<img src='media/" . $media['nomMedia'] . "' height='300px' width='300px'/>";
+            }
+        }
+        echo "</div><br>";
+        echo "</div>";
+    }
+
+    var_dump($myPosts);
+    var_dump($myImages);
 
 
 

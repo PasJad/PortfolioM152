@@ -38,11 +38,16 @@ if ($submitted) {
                 if ($willUploadFile == true){
                     for ($i = 0; $i < count($_FILES["fileToUpload"]["name"]); $i++) {
                         echo $_FILES['fileToUpload']["name"][$i];
-                        $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"][$i]);
+                        $target_name = basename(uniqid('',true) . '_' . $_FILES["fileToUpload"]["name"][$i]);
+                        $target_file = $target_dir . $target_name;
                         if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $target_file)) {
                             $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-                            addMedia($_FILES["fileToUpload"]["name"][$i], $imageFileType, $post);
+                            echo $target_name;
+                            $lastidMedia = addMedia($target_name, $imageFileType, $post);
+                            echo $lastidMedia;
                             echo 'Your files has been uploaded';
+
+                            echo $_FILES["fileToUpload"]["name"][$i];
 
                         } else {
                             echo "Une image n'as pas pu être ajouter";
