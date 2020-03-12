@@ -115,6 +115,7 @@ function DrawMessage(){
     for ($i = 0;$i < count($myPosts);$i++) {
         echo "<div class='well'>";
         echo "<div class=\"text-center\" style='font-size: 3vh'>" . $myPosts[$i]['commentaire'];
+        echo "<br>";
         foreach ($myMedias as $media) {
             if ($media['idPost'] == $myPosts[$i]['idPost']){
                 if ($media['typeMedia'] == "webm" ||  $media['typeMedia'] == "mp4" ){
@@ -128,8 +129,6 @@ function DrawMessage(){
                 {
                     echo "<audio src='media/" . $media['nomMedia'] . "' height='300px' width='300px' controls/>";
                 }
-                echo $media['typeMedia'];
-
             }
 
         }
