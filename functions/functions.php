@@ -82,7 +82,7 @@ function getMedia(){
         $myMedia = null;
         $monpdo = connexionDatabase();
 
-        $sql = "select idMedia,idPost,nomMedia from media";
+        $sql = "select idMedia,idPost,nomMedia,typeMedia from media";
 
 
         $myMedia = $monpdo->query($sql)->fetchAll();
@@ -102,10 +102,18 @@ function DrawMessage(){
         echo "<div class=\"text-center\" style='font-size: 3vh'>" . $myPosts[$i]['commentaire'];
         foreach ($myMedias as $media) {
             if ($media['idPost'] == $myPosts[$i]['idPost']){
-                if ($media['TypeMedia']){
-
+                if ($media['typeMedia'] == "webm" ||  $media['typeMedia'] == "mp4" ){
+                    echo "<video src='media/" . $media['nomMedia'] . "' height='300px' width='300px' controls autoplay/>";
                 }
-                echo "<img src='media/" . $media['nomMedia'] . "' height='300px' width='300px'/>";
+                if ($media['typeMedia'] == "png" ||  $media['typeMedia'] == "jpeg")
+                {
+                    echo "<img src='media/" . $media['nomMedia'] . "' height='300px' width='300px'/>";
+                }
+                if ($media['typeMedia'] == "mp3" ||  $media['typeMedia'] == "wav")
+                {
+                    echo "<audio src='media/" . $media['nomMedia'] . "' height='300px' width='300px' controls/>";
+                }
+                echo $media['typeMedia'];
             }
         }
         echo "</div><br>";
@@ -113,7 +121,7 @@ function DrawMessage(){
     }
 
     var_dump($myPosts);
-    var_dump($myImages);
+    var_dump($myMedias);
 
 
 

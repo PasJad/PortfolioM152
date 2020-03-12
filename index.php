@@ -215,7 +215,7 @@ require_once('functions/functions.php');
                             <ul class="pull-left list-inline">
                                 <li>
                                     <input type="file" name="fileToUpload[]" id="fileToUpload" multiple
-                                           accept="image/*,video/*">
+                                           accept="image/*,video/*,audio/*">
                                 </li>
                             </ul>
                         </div>

@@ -5,6 +5,9 @@ $commentaire = filter_input(INPUT_POST, 'comment', FILTER_SANITIZE_STRING);
 $submitted = filter_input(INPUT_POST, 'submit', FILTER_SANITIZE_STRING);
 $target_dir = "../media/";
 $willUploadFile = false;
+$maxSizeImage = 3000000;
+$maxSizeVideo = 8000000;
+$maxSizeAudio = 20000000;
 
 $uploadOk = 1;
 
@@ -14,18 +17,28 @@ if ($submitted) {
         if ($_FILES["fileToUpload"]['name'][0] != "") {
             $willUploadFile = true;
         }
-
-
         if ($willUploadFile == true){
             // Allow certain file formats
             for ($i = 0; $i < count($_FILES["fileToUpload"]["name"]); $i++) {
                 $myFileType = mime_content_type($_FILES["fileToUpload"]["tmp_name"][$i]);
+                $myFileSize = filesize($_FILES["fileToUpload"]["tmp_name"][$i]);
                 echo $myFileType;
                 echo strpos($myFileType, "image/");
-                if (strpos($myFileType, "image/") === 0 or strpos($myFileType, "video/") === 0 or strpos($myFileType, "audio/") === 0) {
+                if (strpos($myFileType, "image/") === 0 || strpos($myFileType, "video/") === 0 || strpos($myFileType, "audio/") === 0) {
                     $uploadOk = 1;
                 } else {
+                    echo $myFileType;
                     echo "File is not an image.";
+                    $uploadOk = 0;
+                }
+                if (strpos($myFileType, "image/") === 0 && $myFileSize <= $maxSizeImage || strpos($myFileType, "video/") === 0 && $myFileSize <= $maxSizeVideo || strpos($myFileType, "audio/") === 0 && $myFileSize <= $maxSizeAudio){
+                    $uploadOk = 1;
+                    echo "<br>";
+                    echo  $myFileSize;
+                    echo "<br>";
+                }
+                else {
+                    echo "he size too big for he godam upload";
                     $uploadOk = 0;
                 }
             }
